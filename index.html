@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Face Recognition App</title>
+</head>
+<body>
+  <h1>Face Recognition App</h1>
+  <input type="file" id="imageInput" accept="image/*">
+  <button onclick="uploadImage()">Upload Image</button>
+  <p id="result"></p>
+
+  <script>
+    async function uploadImage() {
+      const fileInput = document.getElementById('imageInput');
+      console.log(fileInput);
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert('Please select an image');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      try {
+        const response = await fetch('http://localhost:3000/recognize', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.match) {
+          document.getElementById('result').innerText = 'Face Match Found!';
+        } else {
+          document.getElementById('result').innerText = 'No Match Found';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while processing the image.');
+      }
+    }
+  </script>
+</body>
+</html>
